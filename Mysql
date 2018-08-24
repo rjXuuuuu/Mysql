@@ -2,7 +2,7 @@ CREATE TABLE t_bookType(
 	id int primary key auto_increment,
 	bookTypeName varchar(20),
 	bookTypeDesc varchar(200)
-);
+);#创建表格
 
 
 CREATE TABLE t_book(
@@ -12,97 +12,97 @@ CREATE TABLE t_book(
 	price decimal(6,2),
 	bookTypeId int,
 	constraint `fk` foreign key (`bookTypeId`) references `t_bookType`(`id`)
-);
+);#创建子，设置外键，将bookTypeId与id关联
 
 
-desc t_bookType;
+desc t_bookType;#查看表基本结构
 
-show create table t_bookType;
+show create table t_bookType;#查看表详细结构
 
-alter table t_book rename t_book2;
+alter table t_book rename t_book2;#更改表名
 
 
-alter table t_book change bookName bookName2 varchar(20);
+alter table t_book change bookName bookName2 varchar(20);#修改字段
 
-alter table t_book add testField int first ;
+alter table t_book add testField int first ;#增加字段
 
-alter table t_book drop testField;
+alter table t_book drop testField;#删除字段
 
-drop table t_bookType;
+drop table t_bookType;#删除表
 
 drop table t_book;
 
-SELECT id,stuName,age,sex,gradeName FROM t_student ;
+SELECT id,stuName,age,sex,gradeName FROM t_student ;#查询所有字段
 
-SELECT stuName,id,age,sex,gradeName FROM t_student ;
+SELECT stuName,id,age,sex,gradeName FROM t_student ;#换序查询所有字段
 
-SELECT * FROM t_student;
+SELECT * FROM t_student;#查询所有字段
 
-SELECT stuName,gradeName FROM t_student;
+SELECT stuName,gradeName FROM t_student;#查询制定字段
 
-SELECT * FROM t_student WHERE id=1;
+SELECT * FROM t_student WHERE id=1;#条件查询，查询id为1的数据
 
 SELECT * FROM t_student WHERE age>22;
 
-SELECT * FROM t_student WHERE age IN (21,23);
+SELECT * FROM t_student WHERE age IN (21,23);#查询年龄为21或23的数据
 SELECT * FROM t_student WHERE age NOT IN (21,23);
 
-SELECT * FROM t_student WHERE age BETWEEN 21 AND 24;
+SELECT * FROM t_student WHERE age BETWEEN 21 AND 24;#查询年龄为21到24岁的数据
 SELECT * FROM t_student WHERE age NOT BETWEEN 21 AND 24;
+##模糊查询
+SELECT * FROM t_student WHERE stuName LIKE '张三';#查询结果为“张三”
+SELECT * FROM t_student WHERE stuName LIKE '张三%';#%代表任意字符，查询结果为“张三”、“张三丰”、“张三峰小”
+SELECT * FROM t_student WHERE stuName LIKE '张三__';#_代表单个字符，查询结果为“张三丰”
+SELECT * FROM t_student WHERE stuName LIKE '%张三%';#结果为“小张三”、“小小张三”、“张三”、“张三丰”、“张三峰小”
 
-SELECT * FROM t_student WHERE stuName LIKE '张三';
-SELECT * FROM t_student WHERE stuName LIKE '张三%';
-SELECT * FROM t_student WHERE stuName LIKE '张三__';
-SELECT * FROM t_student WHERE stuName LIKE '%张三%';
-
-SELECT * FROM t_student WHERE sex IS NULL;
+SELECT * FROM t_student WHERE sex IS NULL;#查询性别空值的数据
 SELECT * FROM t_student WHERE sex IS NOT NULL;
 
 SELECT * FROM t_student WHERE gradeName='一年级' AND age=23
 SELECT * FROM t_student WHERE gradeName='一年级' OR age=23
 
-SELECT DISTINCT gradeName FROM t_student;
+SELECT DISTINCT gradeName FROM t_student;#DISTINCT去重复
 
-SELECT * FROM t_student ORDER BY age ASC;
-SELECT * FROM t_student ORDER BY age DESC;
+SELECT * FROM t_student ORDER BY age ASC;#按年龄升序排序
+SELECT * FROM t_student ORDER BY age DESC;#按年龄降序排序
+##分组查询
+SELECT * FROM t_student GROUP BY gradeName;#每个年级只出现一条数据
 
-SELECT * FROM t_student GROUP BY gradeName;
+SELECT gradeName,GROUP_CONCAT(stuName) FROM t_student GROUP BY gradeName;#将各年级的学生姓名分组聚合查询
 
-SELECT gradeName,GROUP_CONCAT(stuName) FROM t_student GROUP BY gradeName;
-
-SELECT gradeName,COUNT(stuName) FROM t_student GROUP BY gradeName;
-
-SELECT gradeName,COUNT(stuName) FROM t_student GROUP BY gradeName HAVING COUNT(stuName)>3;
-
-SELECT gradeName,COUNT(stuName) FROM t_student GROUP BY gradeName WITH ROLLUP;
-SELECT gradeName,GROUP_CONCAT(stuName) FROM t_student GROUP BY gradeName WITH ROLLUP;
-
-SELECT * FROM t_student LIMIT 0,5;
+SELECT gradeName,COUNT(stuName) FROM t_student GROUP BY gradeName;#查询每个年级学生总数
+###HAVING限制输出结果
+SELECT gradeName,COUNT(stuName) FROM t_student GROUP BY gradeName HAVING COUNT(stuName)>3;#查询年级学生数大于三的年级的学生数
+###WITH ROLLUP最后加入一个综合行
+SELECT gradeName,COUNT(stuName) FROM t_student GROUP BY gradeName WITH ROLLUP;#查询每个年级学生总数并总计
+SELECT gradeName,GROUP_CONCAT(stuName) FROM t_student GROUP BY gradeName WITH ROLLUP;#若为文本则显示所有文本
+##LIMIT分页查询
+SELECT * FROM t_student LIMIT 0,5;#0为初始数据，5是记录数
 SELECT * FROM t_student LIMIT 5,5;
 SELECT * FROM t_student LIMIT 10,5;
 
-SELECT COUNT(*) FROM t_grade;
+SELECT COUNT(*) FROM t_grade;#计算所有记录数
 
-SELECT COUNT(*) AS total FROM t_grade;
+SELECT COUNT(*) AS total FROM t_grade;#将所有记录数作为total
 
-SELECT stuName,COUNT(*) FROM t_grade GROUP BY stuName;
+SELECT stuName,COUNT(*) FROM t_grade GROUP BY stuName;#按每个学生分组查询每组记录数
+###SUM求总和
+SELECT stuName,SUM(score) FROM t_grade WHERE stuName="张三";#求张三分数总和
 
-SELECT stuName,SUM(score) FROM t_grade WHERE stuName="张三";
-
-SELECT stuName,SUM(score) FROM t_grade GROUP BY stuName;
-
+SELECT stuName,SUM(score) FROM t_grade GROUP BY stuName;#求出每个学生分数总和
+###AVG求平均
 SELECT stuName,AVG(score) FROM t_grade WHERE stuName="张三";
 
 SELECT stuName,AVG(score) FROM t_grade GROUP BY stuName;
-
-SELECT stuName,course,MAX(score) FROM t_grade WHERE stuName="张三";
+###MAX求最大值
+SELECT stuName,course,MAX(score) FROM t_grade WHERE stuName="张三";#这里有误，course和最高分不会对应
 
 SELECT stuName,MAX(score) FROM t_grade GROUP BY stuName;
-
+###MIN求最小值
 SELECT stuName,course,MIN(score) FROM t_grade WHERE stuName="张三";
 
 SELECT stuName,MIN(score) FROM t_grade GROUP BY stuName;
-
+#连接查询：将两个或两个以上的表按某条件连接起来，从中选取需要的数据
 SELECT * FROM t_book,t_bookType;
 
 SELECT * FROM t_book,t_bookType WHERE t_book.bookTypeId=t_bookType.id;
