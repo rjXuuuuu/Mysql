@@ -102,80 +102,85 @@ SELECT stuName,MAX(score) FROM t_grade GROUP BY stuName;
 SELECT stuName,course,MIN(score) FROM t_grade WHERE stuName="张三";
 
 SELECT stuName,MIN(score) FROM t_grade GROUP BY stuName;
+
 #连接查询：将两个或两个以上的表按某条件连接起来，从中选取需要的数据
 SELECT * FROM t_book,t_bookType;
-
+#内连接查询
 SELECT * FROM t_book,t_bookType WHERE t_book.bookTypeId=t_bookType.id;
 
 SELECT bookName,author,bookTypeName FROM t_book,t_bookType WHERE t_book.bookTypeId=t_bookType.id;
 
-SELECT tb.bookName,tb.author,tby.bookTypeName FROM t_book tb,t_bookType tby WHERE tb.bookTypeId=tby.id;
-
-SELECT * FROM t_book LEFT JOIN t_bookType ON t_book.bookTypeId=t_bookType.id;
+SELECT tb.bookName,tb.author,tby.bookTypeName FROM t_book tb,t_bookType tby WHERE tb.bookTypeId=tby.id;#建议使用别名
+#外连接查询（可查询其中一表的所有数据）
+SELECT * FROM t_book LEFT JOIN t_bookType ON t_book.bookTypeId=t_bookType.id;#左连接
 
 SELECT tb.bookName,tb.author,tby.bookTypeName FROM t_book tb LEFT JOIN t_bookType tby ON tb.bookTypeId=tby.id;
 
 
-SELECT * FROM t_book RIGHT JOIN t_bookType ON t_book.bookTypeId=t_bookType.id;
+SELECT * FROM t_book RIGHT JOIN t_bookType ON t_book.bookTypeId=t_bookType.id;#右连接
 
 SELECT tb.bookName,tb.author,tby.bookTypeName FROM t_book tb RIGHT JOIN t_bookType tby ON tb.bookTypeId=tby.id;
 
+SELECT tb.bookName,tb.author,tby.bookTypeName FROM t_book tb,t_bookType tby WHERE tb.bookTypeId=tby.id AND tb.price>70;#多条件查询
 
-
-
-SELECT tb.bookName,tb.author,tby.bookTypeName FROM t_book tb,t_bookType tby WHERE tb.bookTypeId=tby.id AND tb.price>70;
-
+#子查询
 SELECT * FROM t_book WHERE booktypeId IN (SELECT id FROM t_booktype);
 
 SELECT * FROM t_book WHERE booktypeId NOT IN (SELECT id FROM t_booktype);
 
-
-
 SELECT * FROM t_book WHERE price>=(SELECT price FROM t_pricelevel WHERE priceLevel=1);
 
-
-SELECT * FROM t_book WHERE EXISTS (SELECT * FROM t_booktype);
+SELECT * FROM t_book WHERE EXISTS (SELECT * FROM t_booktype);#假如子查询查询到记录，则进行外层查询
 
 SELECT * FROM t_book WHERE NOT EXISTS (SELECT * FROM t_booktype);
 
-SELECT * FROM t_book WHERE price>= ANY (SELECT price FROM t_pricelevel);
+SELECT * FROM t_book WHERE price>= ANY (SELECT price FROM t_pricelevel);#any表示满足其中任一条件
 
-SELECT * FROM t_book WHERE price>= ALL (SELECT price FROM t_pricelevel);
+SELECT * FROM t_book WHERE price>= ALL (SELECT price FROM t_pricelevel);#all表示满足所有条件
 
+#合并查询
 SELECT id FROM t_book;
 
 SELECT id FROM t_booktype;
 
-SELECT id FROM t_book UNION SELECT id FROM t_booktype;
+SELECT id FROM t_book UNION SELECT id FROM t_booktype;#将所有查询结果合并到一起，然后去掉相同的记录
 
-SELECT id FROM t_book UNION ALL SELECT id FROM t_booktype;
+SELECT id FROM t_book UNION ALL SELECT id FROM t_booktype;#合并但不去掉相同的记录
 
+#为表和字段取别名
 SELECT * FROM t_book WHERE id=1;
 
-SELECT * FROM t_book t WHERE t.id=1;
+SELECT * FROM t_book t WHERE t.id=1;#为表取别名
 
 SELECT t.bookName FROM t_book t WHERE t.id=1;
 
 SELECT t.bookName bName FROM t_book t WHERE t.id=1;
 
-SELECT t.bookName AS bName FROM t_book t WHERE t.id=1;
+SELECT t.bookName AS bName FROM t_book t WHERE t.id=1;#为字段取别名，可加as也可不加
 
-INSERT INTO t_book VALUES(NULL,'我爱我家',20,'张三',1);
+#插入、更新和删除数据
+INSERT INTO t_book VALUES(NULL,'我爱我家',20,'张三',1);#给表的所有字段插入数据
 
 INSERT INTO t_book(id,bookName,price,author,bookTypeId) VALUES(NULL,'我爱我家',20,'张三',1);
 
-INSERT INTO t_book(bookName,author) VALUES('我爱我家','张三');
+INSERT INTO t_book(bookName,author) VALUES('我爱我家','张三');#给表的指定字段插入数据
 
-INSERT INTO t_book(id,bookName,price,author,bookTypeId) VALUES (NULL,'我爱我家2',20,'张三',1),(NULL,'我爱我家3',20,'张三',1);
+INSERT INTO t_book(id,bookName,price,author,bookTypeId) VALUES (NULL,'我爱我家2',20,'张三',1),(NULL,'我爱我家3',20,'张三',1);#同时插入多条数据
 
-UPDATE t_book SET bookName='Java编程思想',price=120 WHERE id=1;
+UPDATE t_book SET bookName='Java编程思想',price=120 WHERE id=1;#更新数据，注意中间用逗号隔开不要用and
 
 UPDATE t_book SET bookName='我' WHERE bookName LIKE '%我爱我家%';
 
-DELETE FROM t_book WHERE id=5;
+DELETE FROM t_book WHERE id=5;#删除数据
 
 DELETE FROM t_book WHERE bookName='我';
 
+#索引：类似于目录，方便快速定位，寻找指定的内容
+##普通索引：可创建在任何数据类型中
+##唯一性索引：用unique参数设置，限制该索引的值必须唯一
+##全文索引：用fulltext参数设置，只能创建在CHAR、VARCHAR、TEXT类型的字段上。提高较大字符串类型的速度；只有MyISAM引擎支持，MySQL默认引擎不支持
+##单/多列索引：给单/多个字段创建索引
+##空间索引：用SPATIAL参数设置，只能建立在空间数据类型上，可提高系统获取空间数据的效率
 CREATE TABLE t_user1(id INT ,
                      userName VARCHAR(20),
                      PASSWORD VARCHAR(20),
