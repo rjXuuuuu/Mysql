@@ -181,46 +181,48 @@ DELETE FROM t_book WHERE bookName='我';
 ##全文索引：用fulltext参数设置，只能创建在CHAR、VARCHAR、TEXT类型的字段上。提高较大字符串类型的速度；只有MyISAM引擎支持，MySQL默认引擎不支持
 ##单/多列索引：给单/多个字段创建索引
 ##空间索引：用SPATIAL参数设置，只能建立在空间数据类型上，可提高系统获取空间数据的效率
+#创建表时创建索引
 CREATE TABLE t_user1(id INT ,
                      userName VARCHAR(20),
                      PASSWORD VARCHAR(20),
                      INDEX (userName)
-	             );
+	             );#创建普通索引
 	             
 CREATE TABLE t_user2(id INT ,
                      userName VARCHAR(20),
                      PASSWORD VARCHAR(20),
                      UNIQUE INDEX index_userName(userName)
-	             );
+	             );#创建唯一性索引
 	           
 CREATE TABLE t_user3(id INT ,
                      userName VARCHAR(20),
                      PASSWORD VARCHAR(20),
                      INDEX index_userName_password(userName,PASSWORD)
-	             );
-	             
+	             );创建多列索引
+ #在已经存在的表上创建索引	             
 CREATE 	INDEX index_userName ON t_user4(userName);
-
 
 CREATE 	UNIQUE INDEX index_userName ON t_user4(userName);
 
 CREATE  INDEX index_userName_password ON t_user4(userName,PASSWORD);
-
+#用alter table语句创建索引
 ALTER TABLE t_user5 ADD INDEX index_userName(userName);
 
 ALTER TABLE t_user5 ADD UNIQUE INDEX index_userName(userName);
 
 ALTER TABLE t_user5 ADD INDEX index_userName_password(userName,PASSWORD);
-
+#删除索引
 DROP INDEX index_userName ON t_user5;
 
 DROP INDEX index_userName_password ON t_user5;
 
-CREATE VIEW v1 AS SELECT * FROM t_book;
+#视图：是一种虚拟的表，没有存放数据，数据存在原表中。增加数据安全性。
+
+CREATE VIEW v1 AS SELECT * FROM t_book;#单表上创建视图
 
 CREATE VIEW v2 AS SELECT bookName,price FROM t_book;
 
-CREATE VIEW v3(b,p) AS SELECT bookName,price FROM t_book;
+CREATE VIEW v3(b,p) AS SELECT bookName,price FROM t_book;#创建视图并使用别名
 
 
 SELECT * FROM v1;
@@ -229,46 +231,47 @@ SELECT * FROM v2;
 
 SELECT * FROM v3;
 
-CREATE VIEW v4 AS SELECT bookName,bookTypeName FROM t_book,t_booktype WHERE t_book.bookTypeId=t_booktype.id;
+CREATE VIEW v4 AS SELECT bookName,bookTypeName FROM t_book,t_booktype WHERE t_book.bookTypeId=t_booktype.id;#多表创建视图
 
-CREATE VIEW v5 AS SELECT tb.bookName,tby.bookTypeName FROM t_book tb,t_booktype tby WHERE tb.bookTypeId=tby.id;
+CREATE VIEW v5 AS SELECT tb.bookName,tby.bookTypeName FROM t_book tb,t_booktype tby WHERE tb.bookTypeId=tby.id;#使用别名
 
 SELECT * FROM v4;
 
 SELECT * FROM v5;
 
-DESC v5;
+DESC v5;#查看视图基本信息
 
-SHOW TABLE STATUS LIKE 'v5';
+SHOW TABLE STATUS LIKE 'v5';#查看视图基本信息
 
 SHOW TABLE STATUS LIKE 't_book';
 
-SHOW CREATE VIEW v5;
+SHOW CREATE VIEW v5;#查看视图详细信息
 
 SELECT  * FROM v1;
 
-CREATE OR REPLACE VIEW v1(bookName,price) AS SELECT bookName,price FROM t_book;
+CREATE OR REPLACE VIEW v1(bookName,price) AS SELECT bookName,price FROM t_book;#修改视图
 
-ALTER VIEW v1 AS SELECT * FROM t_book;
+ALTER VIEW v1 AS SELECT * FROM t_book;#修改视图
+#更新视图，视图是个虚拟的表,其中没有数据。通过视图更新时，都是转换基本表来更新。更新时只能更新权限范围内的数据。
+INSERT INTO v1 VALUES(NULL,'java good',120,'feng',1);#插入新的数据到视图中
 
-INSERT INTO v1 VALUES(NULL,'java good',120,'feng',1);
+UPDATE v1 SET bookName='java very good',price=200 WHERE id=5;#更改视图中的数据
 
-UPDATE v1 SET bookName='java very good',price=200 WHERE id=5;
+DELETE FROM v1 WHERE id=5;#删除视图中的数据
 
-DELETE FROM v1 WHERE id=5;
-
-DROP VIEW IF EXISTS v4;
-
+DROP VIEW IF EXISTS v4;#删除视图
+#触发器：由事件来触发某个操作。这些事件包括INSERT、UPDATE、DELETE语句
 CREATE TRIGGER trig_book AFTER INSERT 
      ON t_book FOR EACH ROW
-        UPDATE t_bookType SET bookNum=bookNum+1 WHERE new.bookTypeId=t_booktype.id;
+        UPDATE t_bookType SET bookNum=bookNum+1 WHERE new.bookTypeId=t_booktype.id;#创建触发器，插入新的数据后将该图书的图书类别的书数量+1，
+	 #其中new是一个过渡变量
         
         
 INSERT INTO t_book VALUES(NULL,'java好',100,'ke',1);
 
 
 
-DELIMITER |
+DELIMITER |  #定义分隔符，到该符号才执行
 CREATE TRIGGER trig_book2 AFTER DELETE 
     ON t_book FOR EACH ROW
     BEGIN
@@ -276,14 +279,14 @@ CREATE TRIGGER trig_book2 AFTER DELETE
        INSERT INTO t_log VALUES(NULL,NOW(),'在book表里删除了一条数据');
        DELETE FROM t_test WHERE old.bookTypeId=t_test.id;
     END 
-|
+|  #创建多个执行语句的触发器，执行三个语句
 DELIMITER ;
 
 DELETE FROM t_book WHERE id=5;
 
-SHOW TRIGGERS;
+SHOW TRIGGERS;#查看触发器
 
-DROP TRIGGER trig_book2 ;
+DROP TRIGGER trig_book2 ;#删除触发器
 
 SELECT CURDATE(),CURTIME(),MONTH(birthday) AS m FROM t_t;
 
