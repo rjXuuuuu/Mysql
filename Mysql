@@ -288,19 +288,19 @@ SHOW TRIGGERS;#查看触发器
 
 DROP TRIGGER trig_book2 ;#删除触发器
 
-SELECT CURDATE(),CURTIME(),MONTH(birthday) AS m FROM t_t;
+SELECT CURDATE(),CURTIME(),MONTH(birthday) AS m FROM t_t;#获得当前日期、时间，获得月份
 
-SELECT userName,CHAR_LENGTH(userName),UPPER(userName),LOWER(userName) FROM t_t;
+SELECT userName,CHAR_LENGTH(userName),UPPER(userName),LOWER(userName) FROM t_t;#计算字符串函数、把所有字母变大写，把所有字母变小写
 
-SELECT num,ABS(num) FROM t_t;
+SELECT num,ABS(num) FROM t_t;#求绝对值
 
-SELECT SQRT(4),MOD(9,4) FROM t_t;
+SELECT SQRT(4),MOD(9,4) FROM t_t;#求平方根、求余
 
-INSERT INTO t_t VALUES(NULL,'2013-1-1','a',1,PASSWORD('123456'));
+INSERT INTO t_t VALUES(NULL,'2013-1-1','a',1,PASSWORD('123456'));#一般对用户的密码加密，不可逆
 
-INSERT INTO t_t VALUES(NULL,'2013-1-1','a',1,MD5('123456'));
+INSERT INTO t_t VALUES(NULL,'2013-1-1','a',1,MD5('123456'));#普通加密，不可逆
 
-INSERT INTO t_t VALUES(NULL,'2013-1-1','a',1,MD5('123456'),ENCODE('abcd','aa'));
+INSERT INTO t_t VALUES(NULL,'2013-1-1','a',1,MD5('123456'),ENCODE('abcd','aa'));#加密函数，结果是一个二进制数，必须用BLOB类型的字段来保存 
 
 SELECT DECODE(pp,'aa') FROM t_t WHERE id=5;
 
