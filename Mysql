@@ -311,7 +311,7 @@ CREATE PROCEDURE pro_book ( IN bT INT,OUT count_num INT)
      SELECT COUNT(*) FROM t_book WHERE bookTypeId=bT;
    END 
    &&
-DELIMITER ;
+DELIMITER ;#创建过程，输入图书类别ID，输出该类别图书数量
 
 CALL pro_book(1,@total);
 
@@ -323,7 +323,7 @@ CREATE FUNCTION func_book (bookId INT)
   RETURN ( SELECT bookName FROM t_book WHERE id=bookId );
  END 
     &&
-DELIMITER ;
+DELIMITER ;#创建函数，根据图书ID查询书名
 
 SELECT func_book(2);
 
@@ -334,7 +334,7 @@ CREATE PROCEDURE pro_user()
 	 INSERT INTO t_user VALUES(NULL,a,b);
 	END 
 &&
-DELIMITER ;
+DELIMITER ;#定义变量
 
 DELIMITER &&
 CREATE PROCEDURE pro_user2()
@@ -344,7 +344,7 @@ CREATE PROCEDURE pro_user2()
 	 INSERT INTO t_user VALUES(NULL,a,b);
 	END 
 &&
-DELIMITER ;
+DELIMITER ;#为变量赋值，直接赋值
 
 DELIMITER &&
 CREATE PROCEDURE pro_user3()
@@ -354,8 +354,7 @@ CREATE PROCEDURE pro_user3()
 	 INSERT INTO t_user VALUES(NULL,a,b);
 	END 
 &&
-DELIMITER ;
-
+DELIMITER ;#为变量赋值，查询后赋值
 
 DELIMITER &&
 CREATE PROCEDURE pro_user4()
@@ -368,7 +367,7 @@ CREATE PROCEDURE pro_user4()
 	 CLOSE cur_t_user2;
 	END 
 &&
-DELIMITER ;
+DELIMITER ;#声明游标、打开游标、使用游标、关闭游标
 
 DELIMITER &&
 CREATE PROCEDURE pro_user5(IN bookId INT)
@@ -380,7 +379,7 @@ CREATE PROCEDURE pro_user5(IN bookId INT)
 	 END IF ;
 	END 
 &&
-DELIMITER ;
+DELIMITER ;#IF语句
 
 DELIMITER &&
 CREATE PROCEDURE pro_user6(IN bookId INT)
@@ -393,7 +392,7 @@ CREATE PROCEDURE pro_user6(IN bookId INT)
 	 END CASE ;
 	END 
 &&
-DELIMITER ;
+DELIMITER ;#Case语句
 
 
 DELIMITER &&
@@ -407,7 +406,7 @@ CREATE PROCEDURE pro_user7(IN totalNum INT)
 	  END LOOP aaa ;
 	END 
 &&
-DELIMITER ;
+DELIMITER ;#LOOP，leave语句，LOOP可使某些特定语句重复执行，实现一个简单的循环。但其本身没有停止循环的语句，必须用leave语句停止循环
 
 
 
@@ -423,7 +422,7 @@ CREATE PROCEDURE pro_user8(IN totalNum INT)
 	  END LOOP aaa ;
 	END 
 &&
-DELIMITER ;
+DELIMITER ;#ITERATE是跳出本次循环的语句
 
 DELIMITER &&
 CREATE PROCEDURE pro_user9(IN totalNum INT)
@@ -435,7 +434,7 @@ CREATE PROCEDURE pro_user9(IN totalNum INT)
 	  END REPEAT;
 	END 
 &&
-DELIMITER ;
+DELIMITER ;#REPEAT是you有条件控制循环语句，满足特定条件时就会跳出循环语句。
 
 DELIMITER &&
 CREATE PROCEDURE pro_user10(IN totalNum INT)
@@ -446,7 +445,7 @@ CREATE PROCEDURE pro_user10(IN totalNum INT)
 	 END WHILE ;
 	END 
 &&
-DELIMITER ;
+DELIMITER ;WHILE语句
 
 CALL pro_user();
 
